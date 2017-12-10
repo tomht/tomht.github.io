@@ -16,7 +16,8 @@
 title: Tom Hewlett-Taylor
 email: tom.hewlett.taylor@googlemail.com
 description: > # this means to ignore newlines until "baseurl:"
-  Software developer based in London. 
+  Tom Hewlett-Taylor is a software developer from London, whose interests include 
+  web development, data and machine learning.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: tomhtdev
