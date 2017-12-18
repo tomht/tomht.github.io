@@ -25,6 +25,7 @@ github_username:  tomht
 instagram_username: tomhewletttaylor
 linkedin_username: Tom Hewlett-Taylor
 linkedin_address: tom-hewlett-taylor-6438859a
+permalink: /:categories/:year/:month/:day/:title
 
 # Build settings
 markdown: kramdown
