@@ -20,6 +20,7 @@ description: > # this means to ignore newlines until "baseurl:"
   web development, data and machine learning.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
+google_analytics: UA-111652450-1
 twitter_username: tomhtdev
 github_username:  tomht
 instagram_username: tomhewletttaylor
