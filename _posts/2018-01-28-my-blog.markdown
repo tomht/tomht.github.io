@@ -1,0 +1,35 @@
+---
+layout: post
+title:  "My blog"
+date:   2018-01-28 13:47:00 +0100
+---
+
+Welcome to my blog. I’m going to keep this post brief, because it’s a post about the blog itself and is therefore by definition less interesting than a regular post.
+
+I’ll do two introductions: one about the tech behind the blog and one about what to expect from the content.
+
+The site is built using the [Jekyll](https://jekyllrb.com/) static website generator, with a design derived from the [Minima](https://github.com/jekyll/minima) theme, and hosted on [GitHub Pages](https://pages.github.com/).
+
+I decided to go with a static site generator for simplicity and performance. There’s no need for a more complex CMS for a site like this. I’ll be the only person updating it, and the vast majority of the content will be textual and static, so adding something like WordPress on top would be unnecessary bloat.
+
+Since GitHub Pages hosts Jekyll sites for free, it was the obvious choice for hosting.
+
+Developing using Jekyll is simple once you get up and running. It’s Ruby-based, which was a slight complication for me as I’ve never used that ecosystem (I heart Python), and therefore wasn’t familiar with the process of installing a Ruby gem, which is required to get Jekyll running. Also, installation of anything can often be more complicated for me because I’m using Ansible to define my machine configuration (more on that in a later post, hopefully). But even taking into account these issues, it was easy to set up.
+
+Once you’ve got going, you can run an instance of your Jekyll site locally using the single command jekyll serve, which then listens for changes to your files and updates automatically. Then, once you’re ready, deploying to production on GitHub Pages is as simple as pushing to a [GitHub repo](https://github.com/tomht/tomht.github.io).
+
+In addition to that, I’ve got an SSL certificate (also free) from [CloudFlare](https://www.cloudflare.com/) and a domain name from [NameCheap](https://www.namecheap.com/) to complete the hosting setup. Maybe there will be some tweaks along the way, but that should be the tech stack largely covered.
+
+So why am I doing this? I enjoy writing and want to devote more time to it. But more than that, it’s a way to organise and solidify thoughts (or half-thoughts) I’ve had, and hopefully form new connections.
+
+I’m also conscious that, outside of my job, I’m not great at finishing projects I work on. I tinker a lot, but there’s often not much visible output. Blog posts are an antidote to that. They tend to be short, and each one requires much less effort than, say, a coding project. I’m hoping this will therefore be an outlet through which I can actually finish things, and make publishing a habit. I’ll be sad if I look back in a year’s time and there are only a few posts here.
+
+In terms of content, expect posts about software development and tech, because that’s my job and a big part of my life, but also about anything else that interests me, from health to politics. I tend to prefer writing about ideas over chronicling my existence, but that’s also not a rule.
+
+OK, enough. This isn’t a high quality post, but got to publish, right?
+
+
+
+
+
+
