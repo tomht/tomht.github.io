@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Tom Hewlett-Taylor</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <span class="hide-mobile"><a href="/">Tom Hewlett-Taylor</a></span>
+                <span class="mobile"><a href="/">Home</a></span>
+            </div>
+            <div><a href="/about">About</a></div>
+            <div><a href="/blog">Blog</a></div>
+            <div><a href="contact.html">Contact</a></div>
+        </div>
+        <div class="body">
+            
+<div class="article">
+    <div class="header">
+        <h1>JavaScript promises</h1>
+        <div class="datebadge">March 18, 2020</div>
+    </div>
+    <div class="body">
+        <p>Promises in JavaScript are an intuitive way to perform asynchronous tasks.</p>
+<p><strong>A promise represents some future value that is not yet known.</strong> Where we are unable to immediately return a value from a function, we can return a promise instead.</p>
+<p>By returning a promise, we don’t block execution of the next portion of code. We assign functions to a promise that will run once the promise eventually gives a value.</p>
+<h2 id="a-real-world-scenario">A real-world scenario</h2>
+<p>A real-world scenario that you could model with promises is a Kickstarter campaign.</p>
+<p>You want to fund the creation of an album by your favourite artist, so you pledge money towards it. But you don’t receive a copy of the album straight away; it will take the artist time to create the album after they have received the funding, and there’s always a chance they won’t complete it at all.</p>
+<p>Instead, you could say that the artist gives you a <em>promise</em> in exchange for your pledge.</p>
+<p>The promise is given immediately in exchange for your pledge. The promise is <em>fulfilled</em> later, when you receive the album, or <em>broken</em>, if the project fails.</p>
+<p>And crucially, you don’t sit around waiting for the album. Once you’ve got your promise, you get on with your life. It’s only when the promise is fulfilled or rejected that you have to think about it again.</p>
+<h2 id="promise-syntax-in-javascript">Promise syntax in JavaScript</h2>
+<p>You can create a new promise in JavaScript using the <code>Promise</code> constructor.</p>
+<pre><code>let myPromise = new Promise(...);
+</code></pre><p>The <code>Promise</code> constructor takes a single parameter: a function, known as the executor function of the promise. This function should carry out the long-running task. It takes two functions called <code>resolve</code> and <code>reject</code> as parameters, which should be called when the long-running task succeeds or fails, respectively.</p>
+<pre><code>let myPromise = new Promise((resolve, reject) =&gt; {
+    // Perform long-running task
+    ...
+    // Resolve
+    resolve(result);
+});
+</code></pre><p>To do something with the value passed into the resolve function (the result of the long-running task), you can use the <code>then</code> method to attach a handler to the promise.</p>
+<pre><code>myPromise.then((result) =&gt; {
+    // Do something with the result of the long-running task
+    console.log(result);
+});
+</code></pre><p>Any handlers attached using the then method will be called once the <code>resolve</code> function is called from within the executor function of the promise.</p>
+<p>However, the long-running task in the executor function may fail, and you may call <code>reject</code> in that function instead. To do something with the error passed into the <code>reject</code> function, attach a handler using the <code>catch</code> method.</p>
+<pre><code>myPromise.catch((error) =&gt; {
+    // Do something with the error returned by the long-running task
+    console.log(error);
+});
+</code></pre><h3 id="an-example">An example</h3>
+<p>Let’s take the Kickstarter example from above and turn it into code.</p>
+<pre><code>function makeAlbum() {
+   return new Promise((resolve, reject) =&gt; {
+       setTimeout(() =&gt; {
+           if(Math.random() &gt;= 0.5) {
+               resolve({
+                   title: &quot;The Promised Land&quot;,
+                   length: &quot;50:00&quot;
+               });
+           }
+           else {
+               reject(&quot;Didn't finish the album&quot;);
+           }
+       }, 1000);
+   });
+}
+
+function pledge() {
+   console.log(&quot;I'm pledging to support the album.&quot;);
+   return makeAlbum();
+}
+
+function goToWork() {
+   console.log(&quot;I'm going to work.&quot;);
+}
+
+function goOnHoliday() {
+   console.log(&quot;I'm going on holiday.&quot;)
+}
+
+pledge().then((album) =&gt; {
+   console.log(`I've got the album. It's called ${album.title}.`);
+}).catch((error) =&gt; {
+   console.log(&quot;I'm sad they didn't finish the album.&quot;);
+});
+goToWork();
+goOnHoliday();
+</code></pre><p>The <code>makeAlbum</code> function returns a promise; its executor is a long-running task that can succeed or fail. Here we’ve modeled album creation by setting a timer for 1 second that randomly succeeds or fails.</p>
+<p>The <code>pledge</code> function simply logs some text and then returns the same promise we get from <code>makeAlbum</code>.</p>
+<p>We define some other functions (<code>goToWork</code> and <code>goOnHoliday</code>) that represent other tasks we have.</p>
+<p>We then call <code>pledge</code>, followed by these two other functions. But we attach some handlers to the result of <code>pledge</code>.</p>
+<p>Remember, these handlers won’t be run immediately. They will fire only when <code>makeAlbum</code> completes.</p>
+<p>When you run the code, the output should look like this half the time:</p>
+<pre><code>I've pledged to support the album.
+I'm going to work.
+I'm going on holiday.
+I'm listening to the album!
+</code></pre><p>And this half the time:</p>
+<pre><code>I've pledged to support the album.
+I'm going to work.
+I'm going on holiday.
+I'm sad they didn't finish the album.
+</code></pre><p>When <code>pledge</code> is called, <code>makeAlbum</code> starts running asynchronously. While it is still running, <code>goToWork</code> and <code>goOnHoliday</code> are called. Then, finally, when <code>makeAlbum</code> finishes, one of the attached handlers is called, resulting in the last line of output.</p>
+<h2 id="promise-chaining">Promise chaining</h2>
+<p>Sometimes you need to create a promise based on the result of another promise. This is known as <em>promise chaining</em>.</p>
+<p>To extend our Kickstarter example, let’s imagine you want to review the album once you’ve got it. But before you can review it, you need to listen to it, which takes time.</p>
+<p>We define two new functions, <code>listenToAlbum</code> and <code>reviewAlbum</code>.</p>
+<pre><code>function listenToAlbum(album) {
+   return new Promise((resolve, reject) =&gt; {
+       console.log(&quot;I'm listening to the album!&quot;);
+       setTimeout(() =&gt; {
+           resolve(Math.round(Math.random() * 10));
+       }, 1000);
+   })
+}
+
+function reviewAlbum(rating) {
+   console.log(`I give the album a score of ${rating}/10.`);
+}
+</code></pre><p>Then, we chain them to the previous promises.</p>
+<pre><code>pledge().then((album) =&gt; {
+   console.log(`I've got the album. It's called ${album.title}.`);
+   return listenToAlbum(album);
+}).then((rating) =&gt; {
+   reviewAlbum(rating);
+}).catch((error) =&gt; {
+   console.log(&quot;I'm sad they didn't finish the album.&quot;);
+});
+goToWork();
+goOnHoliday();
+</code></pre><p>Notice that the first handler we attached returns a promise, to which we can attach a second handler.</p>
+<h2 id="asyncawait">Async/await</h2>
+<p>Promises in JavaScript are powerful, but writing the code for them can get tiresome, especially if you’re dealing with large promise chains.</p>
+<p>You can simplify things by using <em>async/await</em> syntax instead. With async/await, you can write asynchronous code that looks much more like traditional synchronous code.</p>
+<p>This syntax can only be used inside functions. The function where you’re using it must be declared as an async function by using the <code>async</code> keyword.</p>
+<pre><code>async function myFunc() {
+    ....
+}
+</code></pre><p>Once a function has been declared async, you can make use of the <code>await</code> keyword within it.</p>
+<pre><code>let result = await promise;
+doSomething(result);
+</code></pre><p>Used in front of a promise, the <code>await</code> keyword will return the result of the promise, <em>once it has been fulfilled</em>. Execution of that portion of code is halted while the executor function of the promise runs, and resumes once it has finished.</p>
+<p>This is non-blocking; the JavaScript engine can process other code in the meantime.</p>
+<p>This is equivalent to attaching a handler to the promise:</p>
+<pre><code>promise.then((result) =&gt; {
+    doSomething(result);
+});
+</code></pre><p>The two code snippets do exactly the same thing, but the async/await syntax is a little simpler. The benefit is more clear when doing promise chaining.</p>
+<p>Compare the following snippets:</p>
+<pre><code>promise.then((result) =&gt; {
+    return doSomething(result);
+}).then(result) =&gt; {
+    doSomethingElse(result);
+};
+</code></pre><pre><code>let result1 = await promise;
+let result2 = await doSomething(result);
+doSomethingElse(result2);
+</code></pre><h3 id="an-example-1">An example</h3>
+<p>We can rewrite part of our Kickstarter example using async/await syntax.</p>
+<pre><code>(async () =&gt; {
+   let album = await pledge();
+   console.log(`I've got the album. It's called ${album.title}.`);
+   let rating = await listenToAlbum(album);
+   reviewAlbum(rating);
+})();
+goToWork();
+goOnHoliday();
+</code></pre><p>This is a bit cleaner, but notice that we’ve had to wrap some of the code in a function to declare it async.</p>
+<p>This code also doesn’t handle the case where our promise fails.</p>
+<p>When using the <code>await</code> keyword, if a promise fails then it throws an error instead of returning a result. The surrounding code should therefore deal with the error using try/catch syntax.</p>
+<pre><code>(async () =&gt; {
+   try {
+       let album = await pledge();
+       console.log(`I've got the album. It's called ${album.title}.`);
+       let rating = await listenToAlbum(album);
+       reviewAlbum(rating);
+   } catch(err) {
+       console.log(&quot;I'm sad they didn't finish the album.&quot;);
+   }
+
+
+})();
+goToWork();
+goOnHoliday();
+</code></pre><!-- Docs to Markdown version 1.0β19 -->
+    </div>
+</div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

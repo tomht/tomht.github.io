@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title></title>
+    <link>/</link>
+    <description>Recent content on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 22 Jun 2020 19:52:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A light introduction to tacit programming with JavaScript</title>
+      <link>/2020/06/22/tacit-programming-javascript/</link>
+      <pubDate>Mon, 22 Jun 2020 19:52:00 +0000</pubDate>
+      
+      <guid>/2020/06/22/tacit-programming-javascript/</guid>
+      <description>Tacit programming is a style of programming in which you don&amp;rsquo;t identify the arguments your functions operate on. Instead, you define your functions by composing other functions.
+It&amp;rsquo;s also known as the &amp;ldquo;point-free&amp;rdquo; style, and it&amp;rsquo;s a common pattern in functional programming.
+The aim of this post is to dig into what that exactly that means, how it&amp;rsquo;s possible in JavaScript and why you might want to code in that style.</description>
+    </item>
+    
+    <item>
+      <title>The beauty of pipelining in F#</title>
+      <link>/2020/06/06/the-beauty-of-pipelining-in-fsharp/</link>
+      <pubDate>Sat, 06 Jun 2020 15:39:00 +0000</pubDate>
+      
+      <guid>/2020/06/06/the-beauty-of-pipelining-in-fsharp/</guid>
+      <description>A common pattern in functional programming is to chain several functions together in a single expression.
+The output of one function becomes the input of the next, and so on, forming a pipeline.
+Imagine we want to take a list of numbers, filter out the odd ones, square each one and then take the sum, before printing the result.
+This is what it might look like in JavaScript:
+let filterOdd = x =&amp;gt; x.</description>
+    </item>
+    
+    <item>
+      <title>JavaScript promises</title>
+      <link>/2020/03/18/javascript-promises/</link>
+      <pubDate>Wed, 18 Mar 2020 08:35:00 +0000</pubDate>
+      
+      <guid>/2020/03/18/javascript-promises/</guid>
+      <description>Promises in JavaScript are an intuitive way to perform asynchronous tasks.
+A promise represents some future value that is not yet known. Where we are unable to immediately return a value from a function, we can return a promise instead.
+By returning a promise, we don’t block execution of the next portion of code. We assign functions to a promise that will run once the promise eventually gives a value.</description>
+    </item>
+    
+    <item>
+      <title>Making the leap from development to management</title>
+      <link>/2020/03/12/making-the-leap-from-development-to-management/</link>
+      <pubDate>Thu, 12 Mar 2020 17:48:00 +0000</pubDate>
+      
+      <guid>/2020/03/12/making-the-leap-from-development-to-management/</guid>
+      <description>Making the leap from being a software developer to a development manager is hard. Suddenly, you’re not judged on your own performance, but on the performance of your team as a whole.
+The skills you need to be a good manager are very different to those of a developer. Unfortunately, these skills are not taken into account enough when promoting.
+When you’re a developer, you’re mostly valuable if you write good code and deliver features.</description>
+    </item>
+    
+    <item>
+      <title>OAuth simplified</title>
+      <link>/2020/02/29/oauth-simplified/</link>
+      <pubDate>Sat, 29 Feb 2020 08:41:19 +0100</pubDate>
+      
+      <guid>/2020/02/29/oauth-simplified/</guid>
+      <description>The first time I clicked “Sign in with Google” on another website, I was amazed. I thought “Is this magic?”
+Then I thought “Is this safe?”
+Signing in this way is convenient. It means one less registration form, one less password to manage. But what’s going on behind the scenes, and how do we know it’s secure?
+It’s all powered by OAuth. OAuth is an open standard for access delegation. It&amp;rsquo;s what ensures these interactions can take place without us compromising our accounts.</description>
+    </item>
+    
+    <item>
+      <title>Material world</title>
+      <link>/2017/12/21/material-world/</link>
+      <pubDate>Thu, 21 Dec 2017 13:47:00 +0100</pubDate>
+      
+      <guid>/2017/12/21/material-world/</guid>
+      <description>I’m no designer, which is perhaps why I like Google’s Material Design system so much.
+For the uninitiated:
+ Material Design is a unified system that combines theory, resources, and tools for crafting digital experiences.
+ Vague as that definition may be, you will have seen Material Design in action if you have an Android phone, or use web apps like Google Calendar. Essentially, it’s a set of design and UX principles that inform the creation of websites and apps.</description>
+    </item>
+    
+    <item>
+      <title>Being green in 2018</title>
+      <link>/2017/12/20/being-green-in-2018/</link>
+      <pubDate>Wed, 20 Dec 2017 12:16:19 +0100</pubDate>
+      
+      <guid>/2017/12/20/being-green-in-2018/</guid>
+      <description>Over the last year or so I’ve taken a few steps, not always consciously, towards being a more environmentally friendly person. Being “green” had never particularly been part of my identity or something I put much active effort into, but over time it has crept up on me.
+The end of the year feels like a good time to take stock of things like this - to summarise what I’ve done already and what I will strive to do in 2018 and beyond.</description>
+    </item>
+    
+    <item>
+      <title>About me</title>
+      <link>/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/about/</guid>
+      <description>Hi, I’m Tom. I’ve spent the last decade working in technology teams, both as a software developer and a manager.
+I’m particularly interested in the human side of tech leadership. Ultimately, software is both made and used by real people. The tech is the easy part.
+I’m currently working as Head of Data for the UK’s leading EdTech company, where I lead a team of data scientists, data engineers and BI analysts.</description>
+    </item>
+    
+    <item>
+      <title>Contact</title>
+      <link>/contact/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/contact/</guid>
+      <description>Say hello on Twitter: @thewletttaylor</description>
+    </item>
+    
+  </channel>
+</rss>

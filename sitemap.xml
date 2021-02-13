@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2020-06-22T19:52:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/06/22/tacit-programming-javascript/</loc>
+    <lastmod>2020-06-22T19:52:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/blog/</loc>
+    <lastmod>2020-06-22T19:52:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/06/06/the-beauty-of-pipelining-in-fsharp/</loc>
+    <lastmod>2020-06-06T15:39:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/03/18/javascript-promises/</loc>
+    <lastmod>2020-03-18T08:35:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/03/12/making-the-leap-from-development-to-management/</loc>
+    <lastmod>2020-03-12T17:48:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2020/02/29/oauth-simplified/</loc>
+    <lastmod>2020-02-29T08:41:19+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2017/12/21/material-world/</loc>
+    <lastmod>2017-12-21T13:47:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/2017/12/20/being-green-in-2018/</loc>
+    <lastmod>2017-12-20T12:16:19+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/about/</loc>
+  </url>
+  
+  <url>
+    <loc>/categories/</loc>
+  </url>
+  
+  <url>
+    <loc>/contact/</loc>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+  </url>
+  
+</urlset>

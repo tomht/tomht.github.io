@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Tom Hewlett-Taylor</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <span class="hide-mobile"><a href="/">Tom Hewlett-Taylor</a></span>
+                <span class="mobile"><a href="/">Home</a></span>
+            </div>
+            <div><a href="/about">About</a></div>
+            <div><a href="/blog">Blog</a></div>
+            <div><a href="/contact">Contact</a></div>
+        </div>
+        <div class="body">
+            
+<div class="article">
+    <div class="header">
+        <h1>A light introduction to tacit programming with JavaScript</h1>
+        <div class="datebadge">June 22, 2020</div>
+    </div>
+    <div class="body">
+        <p>Tacit programming is a style of programming in which you don&rsquo;t identify the arguments your functions operate on. Instead, you define your functions by composing other functions.</p>
+<p>It&rsquo;s also known as the &ldquo;point-free&rdquo; style, and it&rsquo;s a common pattern in functional programming.</p>
+<p>The aim of this post is to dig into what that exactly that means, how it&rsquo;s possible in JavaScript and why you might want to code in that style.</p>
+<p>Let&rsquo;s look at a simple example for motivation.</p>
+<p>Imagine we want to automatically generate an email address for new starters at our company, from their names. Our rule for doing this is that we want to take the person&rsquo;s surname, change it to lowercase, then append &ldquo;@companyname.com&rdquo;.</p>
+<p>Here&rsquo;s how we might do that in code:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> getSurname(fullName) {
+  <span style="color:#8be9fd;font-style:italic">let</span> nameParts <span style="color:#ff79c6">=</span> fullName.split(<span style="color:#f1fa8c">&#34; &#34;</span>);
+  <span style="color:#ff79c6">return</span> nameParts[nameParts.length <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>];
+}
+
+<span style="color:#8be9fd;font-style:italic">function</span> appendDomain(localPart) {
+  <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">`</span><span style="color:#f1fa8c">${</span>localPart<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">@companyname.com`</span>;
+}
+
+<span style="color:#8be9fd;font-style:italic">function</span> getEmailAddressFromName(fullName) {
+  <span style="color:#ff79c6">return</span> appendDomain(getSurname(fullName).toLowerCase());
+}
+</code></pre></div>
+<p>Here, the <code>getEmailAddressFromName</code> function is really just an amalgamation of 3 other functions, with no additional logic: <code>getSurname</code>, <code>toLowerCase</code> and <code>appendDomain</code>.</p>
+<p>To really see this, it would help to redefine <code>toLowerCase</code> so that it&rsquo;s just a function rather than a string method:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> getSurname(fullName) {
+  <span style="color:#8be9fd;font-style:italic">let</span> nameParts <span style="color:#ff79c6">=</span> fullName.split(<span style="color:#f1fa8c">&#34; &#34;</span>);
+  <span style="color:#ff79c6">return</span> nameParts[nameParts.length <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>];
+}
+
+<span style="color:#8be9fd;font-style:italic">function</span> toLowerCase(string) {
+  <span style="color:#ff79c6">return</span> string.toLowerCase();
+}
+
+<span style="color:#8be9fd;font-style:italic">function</span> appendDomain(localPart) {
+  <span style="color:#ff79c6">return</span> <span style="color:#f1fa8c">`</span><span style="color:#f1fa8c">${</span>localPart<span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">@companyname.com`</span>;
+}
+
+<span style="color:#8be9fd;font-style:italic">function</span> getEmailAddressFromName(fullName) {
+  <span style="color:#ff79c6">return</span> appendDomain(toLowerCase(getSurname(fullName)));
+}
+</code></pre></div>
+<p>Now it&rsquo;s easy to see that <code>getEmailAddress</code> is just 3 functions applied in sequence.</p>
+<p>It would be great if we could declare <code>getEmailAddress</code> using something like the imaginary syntax below:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">let</span> getEmailAddressFromName <span style="color:#ff79c6">=</span> appendDomain <span style="color:#ff79c6">of</span> toLowerCase <span style="color:#ff79c6">of</span> getSurname
+</code></pre></div>
+<p>Unfortunately this isn&rsquo;t real JavaScript. But if it was, it would be a clean way of expressing that one function is just a composition of 3 others. This is what we would call a <strong>point-free</strong> definition.</p>
+<p>That&rsquo;s a bit of a strange term, but it makes sense when you consider that a &ldquo;point&rdquo; in this context means an argument.</p>
+<p>Is there some way we could approximate this in JavaScript?</p>
+<p>We can definitely try!</p>
+<p>Let&rsquo;s make things simpler by considering the case where we want to compose just 2 function together.</p>
+<p>Keeping the same example, we might want to define a <code>getLowerCaseSurname</code> function to be <code>getSurname</code> followed by <code>toLowerCase</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> getLowerCaseSurname(fullName) {
+  <span style="color:#ff79c6">return</span> toLowerCase(getSurname(fullName));
+}
+</code></pre></div>
+<p>Simple enough.</p>
+<p>Now let&rsquo;s define a function called <code>compose</code> that looks like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> compose(f, g) {
+  <span style="color:#ff79c6">return</span> x =&gt; f(g(x));
+}
+</code></pre></div>
+<p>This might be confusing at first glance. What does this function do?</p>
+<p>We can see it returns another function. That function takes a single argument, <code>x</code>, applies <code>g</code> to it, then applies <code>f</code> to it. Aha! So <code>f</code> and <code>g</code> must both be functions.</p>
+<p>So we can see that compose takes two functions as arguments and returns another function.</p>
+<p>This sounds like what we wanted to do with <code>getLowerCaseSurname</code>. What happens if we pass in <code>toLowerCase</code> and <code>getSurname</code> to compose? It would return the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">x =&gt; toLowerCase(getSurname(x))
+</code></pre></div>
+<p>Hopefully you can see that is equivalent to our definition of <code>getLowerCaseSurname</code> above.</p>
+<p>So, actually, we could have written the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">let</span> getLowerCaseSurname <span style="color:#ff79c6">=</span> compose(toLowerCase, getSurname);
+</code></pre></div>
+<p>This is very clean. And point-free! We&rsquo;ve defined <code>getLowerCaseSurname</code> purely in terms of other functions without mentioning the data the function operates on.</p>
+<p>What if we wanted to apply three or more functions in a row, like with <code>getEmailAddressFromName</code>?</p>
+<p>We could define a more generic <code>compose</code> function that works with a variable number of arguments:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> compose(...functions) {
+  <span style="color:#ff79c6">return</span> x =&gt; functions.reduceRight((gx, f) =&gt; f(gx), x);
+}
+</code></pre></div>
+<p>This version is a little harder to understand, so don&rsquo;t worry if it&rsquo;s not clear. What matters is that, using this function, we can define <code>getEmailAddressFromName</code> as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">let</span> getEmailAddressFromName <span style="color:#ff79c6">=</span> compose(appendDomain, toLowerCase, getSurname);
+</code></pre></div>
+<p>This is really not far from what we envisioned earlier using the imaginary &ldquo;of&rdquo; keyword. It&rsquo;s point-free, and very readable: you can easily see that one function has been made by composing several others in sequence.</p>
+<p>The <code>compose</code> function is essential to tacit programming and functional programming in general. You will find it (sometimes with a different name) in any functional programming library, including <a href="https://lodash.com/">Lodash</a>, <a href="https://underscorejs.org/">Underscore</a> and my personal favourite, <a href="https://ramdajs.com/">Ramda</a>.</p>
+<p>Here&rsquo;s how you would use it in Ramda:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#ff79c6">const</span> R <span style="color:#ff79c6">=</span> require(<span style="color:#f1fa8c">&#39;ramda&#39;</span>);
+
+<span style="color:#8be9fd;font-style:italic">let</span> ceilAbs <span style="color:#ff79c6">=</span> R.compose(<span style="color:#8be9fd;font-style:italic">Math</span>.ceil, <span style="color:#8be9fd;font-style:italic">Math</span>.abs);
+
+console.log(ceilAbs(<span style="color:#ff79c6">-</span><span style="color:#bd93f9">3.7</span>)); <span style="color:#6272a4">// Logs 4
+</span></code></pre></div>
+<p>Ramda also provides a function called <code>pipe</code>, which does the same thing as <code>compose</code> except that the order of the arguments is reversed:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#ff79c6">const</span> R <span style="color:#ff79c6">=</span> require(<span style="color:#f1fa8c">&#39;ramda&#39;</span>);
+
+<span style="color:#8be9fd;font-style:italic">let</span> ceilAbs <span style="color:#ff79c6">=</span> R.pipe(<span style="color:#8be9fd;font-style:italic">Math</span>.abs, <span style="color:#8be9fd;font-style:italic">Math</span>.ceil);
+
+console.log(ceilAbs(<span style="color:#ff79c6">-</span><span style="color:#bd93f9">3.7</span>)); <span style="color:#6272a4">// Logs 4
+</span></code></pre></div>
+<p>Whether to use <code>compose</code> or <code>pipe</code> is a matter of preference and may depend on the situation. Sometimes it&rsquo;s more intuitive to to read the list of functions you&rsquo;re composing from left to right, in the order they will be applied. In this case, use <code>pipe</code>.</p>
+<p>Whether you choose <code>compose</code> or <code>pipe</code>, these two functions only get you so far in writing point-free code. Without a few more utility functions up your sleeve, you&rsquo;ll quickly encounter a situation that&rsquo;s hard to translate to the point-free style.
+Fortunately, Ramda provides many more functions to make tacit programming easier, such as <code>ifElse</code>, <code>cond</code>, <code>either</code>, <code>both</code>, and many more.</p>
+<p>These are outside the scope of this post, but I encourage you to check out the <a href="https://ramdajs.com/docs/#">Ramda documentation</a> if you&rsquo;re interested.</p>
+<p>Let&rsquo;s look at one more example to hammer home how clean tacit programming can be.</p>
+<p>Let&rsquo;s say we have an array of numbers and we want to find the even ones. We could do the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> getEvenNumbers(numbers) {
+    <span style="color:#ff79c6">return</span> numbers.filter(x =&gt; x <span style="color:#ff79c6">%</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">===</span> <span style="color:#bd93f9">0</span>);
+}
+
+<span style="color:#8be9fd;font-style:italic">let</span> numbers <span style="color:#ff79c6">=</span> [<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">6</span>, <span style="color:#bd93f9">7</span>, <span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">9</span>, <span style="color:#bd93f9">10</span>];
+
+console.log(getEvenNumbers(numbers));
+</code></pre></div>
+<p>Let&rsquo;s try to give <code>getEvenNumbers</code> a point-free definition instead.</p>
+<p>Here we&rsquo;ve used a simple arrow function as our filter condition inside the <code>getEvenNumbers</code> function. The arrow function returns true if a number is even, by checking if it&rsquo;s equal to 0 modulo 2.</p>
+<p>But expressions featuring the modulus operator aren&rsquo;t the most readable, so let&rsquo;s move this out into a named function:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> isEven(number) {
+    <span style="color:#ff79c6">return</span> number <span style="color:#ff79c6">%</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">===</span> <span style="color:#bd93f9">0</span>;
+}
+
+<span style="color:#8be9fd;font-style:italic">function</span> getEvenNumbers(numbers) {
+    <span style="color:#ff79c6">return</span> numbers.filter(x =&gt; isEven(x));
+}
+
+<span style="color:#8be9fd;font-style:italic">let</span> numbers <span style="color:#ff79c6">=</span> [<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">6</span>, <span style="color:#bd93f9">7</span>, <span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">9</span>, <span style="color:#bd93f9">10</span>];
+
+console.log(getEvenNumbers(numbers));
+</code></pre></div>
+<p>This is definitely more readable. But let&rsquo;s look at our new filter condition more closely. It&rsquo;s now an arrow function that returns the result of calling <code>isEven</code> on its argument.</p>
+<p>Hmm, ok&hellip; an arrow function that just returns the result of another function. Doesn&rsquo;t that seem a bit pointless?</p>
+<p>We could have just written the following:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> isEven(number) {
+    <span style="color:#ff79c6">return</span> number <span style="color:#ff79c6">%</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">===</span> <span style="color:#bd93f9">0</span>;
+}
+
+<span style="color:#8be9fd;font-style:italic">function</span> getEvenNumbers(numbers) {
+    <span style="color:#ff79c6">return</span> numbers.filter(isEven);
+}
+
+<span style="color:#8be9fd;font-style:italic">let</span> numbers <span style="color:#ff79c6">=</span> [<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">6</span>, <span style="color:#bd93f9">7</span>, <span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">9</span>, <span style="color:#bd93f9">10</span>];
+
+console.log(getEvenNumbers(numbers));
+</code></pre></div>
+<p>Here, we pass <code>isEven</code> directly into <code>filter</code>. This works just fine, of course - <code>filter</code> expects its argument to be a function that takes a number and returns a boolean. Often we would use an arrow function here, but <code>isEven</code> fits the bill too.</p>
+<p>This is cleaner and more readable, and we&rsquo;re getting closer to being point-free. But we have a problem: we call <code>filter</code>, which is a method on the variable <code>numbers</code>. We can&rsquo;t eliminate our arguments if we have to call methods on them.</p>
+<p>Enter Ramda once more. Ramda redefines array methods such as <code>filter</code>, <code>map</code> and <code>reduce</code> to be standalone functions instead. We can use Ramda&rsquo;s version of filter instead:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#ff79c6">const</span> R <span style="color:#ff79c6">=</span> require(<span style="color:#f1fa8c">&#39;ramda&#39;</span>);
+
+<span style="color:#8be9fd;font-style:italic">function</span> isEven(number) {
+    <span style="color:#ff79c6">return</span> number <span style="color:#ff79c6">%</span> <span style="color:#bd93f9">2</span> <span style="color:#ff79c6">===</span> <span style="color:#bd93f9">0</span>;
+}
+
+<span style="color:#8be9fd;font-style:italic">function</span> getEvenNumbers(numbers) {
+    <span style="color:#ff79c6">return</span> R.filter(isEven, numbers);
+}
+
+<span style="color:#8be9fd;font-style:italic">let</span> numbers <span style="color:#ff79c6">=</span> [<span style="color:#bd93f9">1</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">4</span>, <span style="color:#bd93f9">5</span>, <span style="color:#bd93f9">6</span>, <span style="color:#bd93f9">7</span>, <span style="color:#bd93f9">8</span>, <span style="color:#bd93f9">9</span>, <span style="color:#bd93f9">10</span>];
+
+console.log(getEvenNumbers(numbers));
+</code></pre></div>
+<p>This is still not point free, but we can make it so due to another trick Ramda employs: <strong>currying</strong>.</p>
+<p>All Ramda functions, including <code>filter</code>, are curried by default. If you haven&rsquo;t come across currying before, think of it as a more flexible way of defining functions of multiple arguments, allowing you to provide only some of the arguments at a time.</p>
+<p>In the case of <code>filter</code>, it means the following two ways of calling the function are equivalent:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript">R.filter(isEven, numbers);
+R.filter(isEven)(number);
+</code></pre></div>
+<p>In the first line, we&rsquo;ve provided both arguments at once, as normal. In the second line, we&rsquo;ve called the argument with one argument, then called the result with the second argument. This works just fine for Ramda functions.</p>
+<p>The reason this works is that, by calling the function with just one argument, you return a new function that takes the second argument and then applies both arguments to the original function.</p>
+<p>If the single-argument version of filter was a separate function, it would be defined something like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">function</span> filterOneArg(arg1) {
+    <span style="color:#ff79c6">return</span> arg2 =&gt; R.filter(arg1, arg2);
+}
+</code></pre></div>
+<p>The upshot of all of this is that we could define <code>getEvenNumbers</code> as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">let</span> getEvenNumbers <span style="color:#ff79c6">=</span> numbers =&gt; R.filter(isEven)(numbers);
+</code></pre></div>
+<p>But now we can see we no longer need the arrow function at all, which leads us to our point-free holy grail:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#8be9fd;font-style:italic">let</span> getEvenNumbers <span style="color:#ff79c6">=</span> R.filter(isEven);
+</code></pre></div>
+<p>Hurrah!</p>
+<p>Tacit programming and currying are two of the core concepts of functional programming. If you&rsquo;ve found this post interesting and want to learn more about functional programming without having to learn a whole new language, I suggest <a href="https://mostly-adequate.gitbooks.io/mostly-adequate-guide/">Professor Frisby&rsquo;s Mostly Adequate Guide to Functional Programming</a>, which introduces core FP concepts from a JavaScript perspective.</p>
+
+    </div>
+</div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
