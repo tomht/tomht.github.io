@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="64" y2="64">
+      <stop offset="0%" stop-color="#2997ff"/>
+      <stop offset="50%" stop-color="#ad51ff"/>
+      <stop offset="100%" stop-color="#2997ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" fill="black"/>
+  <text x="50%" y="56%" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="54" fill="url(#grad)" text-anchor="middle" dominant-baseline="middle">T</text>
+</svg>
